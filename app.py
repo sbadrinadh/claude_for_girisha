@@ -25,16 +25,20 @@ if prompt := st.chat_input("Message Claude..."):
         response_placeholder = st.empty()
         full_response = ""
 
-        stream = client.chat.completions.create(
-            model="claude-sonnet-4-6",
-            messages=st.session_state.messages,
-            stream=True,
-        )
-        for chunk in stream:
-            delta = chunk.choices[0].delta.content or ""
-            full_response += delta
-            response_placeholder.markdown(full_response + "▌")
+        try:
+            stream = client.chat.completions.create(
+                model="claude-sonnet-4-6",
+                messages=st.session_state.messages,
+                stream=True,
+            )
+            for chunk in stream:
+                delta = chunk.choices[0].delta.content or ""
+                full_response += delta
+                response_placeholder.markdown(full_response + "▌")
 
-        response_placeholder.markdown(full_response)
+            response_placeholder.markdown(full_response)
+        except Exception as e:
+            st.error(f"Error: {type(e).__name__}: {e}")
+            st.stop()
 
     st.session_state.messages.append({"role": "assistant", "content": full_response})
