@@ -1,12 +1,12 @@
 import streamlit as st
-from openai import OpenAI
+import anthropic
 
 st.set_page_config(page_title="Claude Chat", page_icon="🤖", layout="centered")
 st.title("Claude Chat")
 
-client = OpenAI(
+client = anthropic.Anthropic(
     api_key=st.secrets["ANTHROPIC_API_KEY"],
-    base_url="https://litellm.dhhmena.com/"
+    base_url="https://litellm.dhhmena.com",
 )
 
 if "messages" not in st.session_state:
@@ -26,15 +26,14 @@ if prompt := st.chat_input("Message Claude..."):
         full_response = ""
 
         try:
-            stream = client.chat.completions.create(
-                model="claude-sonnet-4-6",
+            with client.messages.stream(
+                model="claude-opus-4-7",
+                max_tokens=8096,
                 messages=st.session_state.messages,
-                stream=True,
-            )
-            for chunk in stream:
-                delta = chunk.choices[0].delta.content or ""
-                full_response += delta
-                response_placeholder.markdown(full_response + "▌")
+            ) as stream:
+                for text in stream.text_stream:
+                    full_response += text
+                    response_placeholder.markdown(full_response + "▌")
 
             response_placeholder.markdown(full_response)
         except Exception as e:
