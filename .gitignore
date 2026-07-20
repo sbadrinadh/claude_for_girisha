@@ -1,3 +1,11 @@
 .streamlit/secrets.toml
 __pycache__/
 *.pyc
+.DS_Store
+*.sql
+*.log
+*.json
+kitopi-business-review/
+menu-scorecard/
+ncr_vfd_recon/
+tableau_vendor_extract.py
