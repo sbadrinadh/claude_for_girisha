@@ -27,7 +27,7 @@ if prompt := st.chat_input("Message Claude..."):
 
         try:
             with client.messages.stream(
-                model="claude-opus-4-7",
+                model="claude-sonnet-4-6",
                 max_tokens=8096,
                 messages=st.session_state.messages,
             ) as stream:
